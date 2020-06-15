@@ -6,6 +6,23 @@ b $handlePauseState
 
 #function $handlePauseState after $mainLoopRelSpace
 
+% If we're not in the play submode, don't bother with any of this
+lis r5, 0x8054
+ori r5, r5, 0xdc34
+lwz r5, 0x0(r5)
+cmpwi r5, 51
+bne .ignore
+b .doPauseChecking
+
+.ignore
+% Store 0 in the counter
+lis r5, 0x8048
+ori r5, r5, 0xb220
+li r6, 0
+stw r6, 0x0(r5)
+b .end
+
+.doPauseChecking
 % Check whether the game is paused
 lis r5, 0x8054
 ori r5, r5, 0xdcb0
